@@ -662,32 +662,37 @@ namespace Revisión_Precios_APITest
 
                 foreach (var itemExcel in ArrVehiclesExcel)
                 {
-                    
-                        IWebElement lnkVehiculos = DealerSession.WaitObjects("//*[@data-analytics-link-description='VEHÍCULOS']", _driver, 0);
-                        dealerSession.ClickMethod(lnkVehiculos, _driver);
-                        dealerSession.WaitForPageLoad();
 
-                        IWebElement categoVehicle = DealerSession.WaitObjects("//div[@id='categories']/div[@data-category='" + itemExcel.category + "']", _driver, 1);
-                        dealerSession.ClickMethod(categoVehicle, _driver);
+                    IWebElement lnkVehiculos = DealerSession.WaitObjects("//*[@data-analytics-link-description='VEHÍCULOS']", _driver, 0);
+                    dealerSession.ClickMethod(lnkVehiculos, _driver);
+                    dealerSession.WaitForPageLoad();
 
-                        IWebElement imgVehiculo = DealerSession.WaitObjects("//*[@data-analytics-link-description='" + $"{itemExcel.name} {itemExcel.type}".Trim() + "']/div[@class='carBox']/img", _driver, 1);
-                        dealerSession.ValidateImage(imgVehiculo, itemExcel.image_name);
+                    IWebElement categoVehicle = DealerSession.WaitObjects("//div[@id='categories']/div[@data-category='" + itemExcel.category + "']", _driver, 1);
+                    dealerSession.ClickMethod(categoVehicle, _driver);
 
-                        dealerSession.OnlyWait();
-                        List<IWebElement> textNameCar = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='carName']")));
-                        List<IWebElement> priceCar = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='carPrice']")));
+                    IWebElement imgVehiculo = DealerSession.WaitObjects("//*[@data-analytics-link-description='" + $"{itemExcel.name} {itemExcel.type}".Trim() + "']/div[@class='carBox']/img", _driver, 1);
+                    dealerSession.ValidateImage(imgVehiculo, itemExcel.image_name);
 
-                        var siteTextName = textNameCar[indexExcel].Text;
-                        var siteCarPrice = Regex.Replace(priceCar[indexExcel].Text.Substring(8, priceCar[indexExcel].Text.Length - 9), @"[\r\n]+", "");
+                    dealerSession.OnlyWait();
+                    List<IWebElement> textNameCar = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='carName']")));
+                    List<IWebElement> priceCar = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='carPrice']")));
 
-                        dealerSession.ValidationText(siteTextName, $"{itemExcel.name} {itemExcel.type}".Trim() + $" {itemExcel.model}");
-                        dealerSession.ValidationText(siteCarPrice.Trim(), itemExcel.modelPrice);
+                    var siteTextName = textNameCar[indexExcel].Text;
+                    var siteCarPrice = Regex.Replace(priceCar[indexExcel].Text.Substring(8, priceCar[indexExcel].Text.Length - 9), @"[\r\n]+", "");
 
-                        dealerSession.ClickMethod(imgVehiculo, _driver);
+                    dealerSession.ValidationText(siteTextName, $"{itemExcel.name} {itemExcel.type}".Trim() + $" {itemExcel.model}");
+                    dealerSession.ValidationText(siteCarPrice.Trim(), itemExcel.modelPrice);
 
-                        List<IWebElement> cardsVersion = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='mde-versions-vlp__card--info']")));
+                    dealerSession.ClickMethod(imgVehiculo, _driver);
 
-                        if (cardsVersion.Count > 0)
+                    List<IWebElement> cardsVersion = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='mde-versions-vlp__card--info']")));
+
+                    IWebElement priceCarVLP = _driver.FindElement(By.XPath("//*[@class='mde-hero--vlp__header--title']//h1/div"));
+                    siteCarPrice = Regex.Replace(priceCarVLP.Text.Substring(7, priceCarVLP.Text.Length - 8), @"[\r\n]+", "");
+
+                    dealerSession.ValidationText(siteCarPrice.Trim(), itemExcel.modelPrice);
+
+                    if (cardsVersion.Count > 0)
                         {
                             IWebElement cardVehicle = DealerSession.WaitObjects("//*[@data-analytics-link-description='IR A VERSIONES']", _driver, 0);
                             OpenQA.Selenium.Interactions.Actions actions = new OpenQA.Selenium.Interactions.Actions(_driver);

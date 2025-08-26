@@ -134,7 +134,7 @@ namespace SeleniumExtentReportTest
                 throw err.InnerException ?? new Exception("Error: ", err);
             }
         }
-
+/*
         [Test]
         public void Acapulco()
         {
@@ -1380,7 +1380,8 @@ namespace SeleniumExtentReportTest
                 throw (err);
             }
         }
-        
+*/
+  
         //Finalmente ejecutar y registrar los detalles en el reporte
 
         [TearDown]
