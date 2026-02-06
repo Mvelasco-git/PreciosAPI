@@ -647,7 +647,7 @@ namespace Revisión_Precios_APITest
         {
             try
             {
-                var ArrVehiclesExcel = ReadVehiclesFromExcel(@"C:\Users\mvelasc2\source\repos\Revisión-Precios-API\Revisión-Precios-API\Dealers.xlsx");
+                var ArrVehiclesExcel = ReadVehiclesFromExcel(@"C:\Users\manuelvelasco\source\repos\Mvelasco-git\PreciosAPI\Revisión-Precios-API\Dealers.xlsx");
 
                 DealerSession dealerSession = new DealerSession(_driver);
                 dealerSession.IngresarURLWeb(enviorement);
@@ -663,22 +663,23 @@ namespace Revisión_Precios_APITest
                 foreach (var itemExcel in ArrVehiclesExcel)
                 {
 
-                    IWebElement lnkVehiculos = DealerSession.WaitObjects("//*[@data-analytics-link-description='VEHÍCULOS']", _driver, 0);
+                    IWebElement lnkVehiculos = DealerSession.WaitObjects("//*[@data-menu-link='0']", _driver, 0);
                     dealerSession.ClickMethod(lnkVehiculos, _driver);
                     dealerSession.WaitForPageLoad();
 
-                    IWebElement categoVehicle = DealerSession.WaitObjects("//div[@id='categories']/div[@data-category='" + itemExcel.category + "']", _driver, 1);
+                    IWebElement categoVehicle = DealerSession.WaitObjects("//*[contains(@class, 'mdp-navigation')]//*[contains(@class, 'mdp-navigation-flydown')]//*[contains(@class, 'mdp-navigation-flydown__container')]//*[contains(@class, 'modelList')]//*[@id='categories']//*[contains(@data-category, '" + itemExcel.category + "')]", _driver, 1);
                     dealerSession.ClickMethod(categoVehicle, _driver);
 
-                    IWebElement imgVehiculo = DealerSession.WaitObjects("//*[@data-analytics-link-description='" + $"{itemExcel.name} {itemExcel.type}".Trim() + "']/div[@class='carBox']/img", _driver, 1);
+                    IWebElement imgVehiculo = DealerSession.WaitObjects("//*[contains(@class, 'mdp-navigation')]//*[contains(@class, 'mdp-navigation-flydown')]//*[contains(@class, 'mdp-navigation-flydown__container')]//*[contains(@class, 'modelList')]//*[contains(@data-analytics-link-description,'" + $"{itemExcel.name} {itemExcel.type}".Trim()+ "')]/div[@class='carBox']/img", _driver, 1);
+                    
                     dealerSession.ValidateImage(imgVehiculo, itemExcel.image_name);
 
                     dealerSession.OnlyWait();
                     List<IWebElement> textNameCar = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='carName']")));
                     List<IWebElement> priceCar = new List<IWebElement>(_driver.FindElements(By.XPath("//*[@class='carPrice']")));
 
-                    var siteTextName = textNameCar[indexExcel].Text;
-                    var siteCarPrice = Regex.Replace(priceCar[indexExcel].Text.Substring(8, priceCar[indexExcel].Text.Length - 9), @"[\r\n]+", "");
+                    var siteTextName = textNameCar[indexExcel+13].Text;
+                    var siteCarPrice = Regex.Replace(priceCar[indexExcel+13].Text.Substring(8, priceCar[indexExcel+13].Text.Length - 9), @"[\r\n]+", "");
 
                     dealerSession.ValidationText(siteTextName, $"{itemExcel.name} {itemExcel.type}".Trim() + $" {itemExcel.model}");
                     dealerSession.ValidationText(siteCarPrice.Trim(), itemExcel.modelPrice);
@@ -753,7 +754,7 @@ namespace Revisión_Precios_APITest
                                             {
                                                 indiceVerExcel = indiceVerExcel - 1;
                                                 int precioTA = int.Parse(itemExcel.versions[indiceVerExcel].price.Replace(",", ""));
-                                                itemExcel.versions[indiceVerExcel].price = (precioTA + 9000).ToString();
+                                                itemExcel.versions[indiceVerExcel].price = (precioTA + 10000).ToString();
                                             }
                                             break;
                                     }
